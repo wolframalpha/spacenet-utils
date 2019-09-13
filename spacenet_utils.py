@@ -32,7 +32,7 @@ def make_dataset(kind, im_paths, summeryData_path, im_id_prefix):
         poly_verts = get_poly_arr(im_path2id(im_path), summeryData_path, im_id_prefix)
         if not poly_verts:
             y = np.zeros((w, h), dtype=bool)
-            y = np.zeros(w*h, dtype=bool)
+#             y = np.zeros(w*h, dtype=bool)
         else:
             y = poly_verts2mask(poly_verts, w, h)#.flatten().astype(bool)
 #         X = X.reshape(w*h,n_bands)
