@@ -9,7 +9,7 @@ import re
 
 
 
-def make_dataset(kind='test', im_paths=None, summeryData_path=None):
+def make_dataset(kind='test', im_id_prefix, im_paths=None, ummeryData_path=None):
     '''
     Make dataset of pixel spectra and corresponding ground-truth labels.
     :param kind: 'test' or 'train'.  if 'train', then empty (black) pixels are removed so that kNN is more efficient.
@@ -28,7 +28,7 @@ def make_dataset(kind='test', im_paths=None, summeryData_path=None):
             n_bands = X.shape[2]
             Xacc = np.empty((0,n_bands))
         ## process polygons
-        poly_verts = get_poly_arr(im_path2id(im_path), summeryData_path)
+        poly_verts = get_poly_arr(im_path2id(im_path), summeryData_path, im_id_prefix)
         if not poly_verts:
             y = np.zeros(w*w,dtype=bool)
         else:
