@@ -24,16 +24,17 @@ def make_dataset(kind, im_paths, summeryData_path, im_id_prefix):
         # get image pixel array
         X = geotiff2array(im_path)
         w = X.shape[0]              # image width = height
+        h = X.shape[1]
         if Xacc is None:
             n_bands = X.shape[2]
             Xacc = np.empty((0,n_bands))
         ## process polygons
         poly_verts = get_poly_arr(im_path2id(im_path), summeryData_path, im_id_prefix)
         if not poly_verts:
-            y = np.zeros(w*w,dtype=bool)
+            y = np.zeros(w*h,dtype=bool)
         else:
-            y = poly_verts2mask(poly_verts).flatten().astype(bool)
-        X = X.reshape(w*w,n_bands)
+            y = poly_verts2mask(poly_verts, w, h).flatten().astype(bool)
+        X = X.reshape(w*h,n_bands)
         if kind == 'train':
             # remove black pixels
             good_px = (X!=np.zeros(n_bands)).all(axis=1)
@@ -45,13 +46,13 @@ def make_dataset(kind, im_paths, summeryData_path, im_id_prefix):
     return Xacc, yacc
 
 
-def poly_verts2mask(poly_verts,w=650):
+def poly_verts2mask(poly_verts, w, h):
     '''
     convert polygon vertices to ground-truth mask
     :param poly_verts: array of polygon vertices in units of pixels.  each element is an array of the x,y pixel locations.
     :return: w x w binary nparray of ground-truth building pixels. 1 is building, 0 is not-building.
     '''
-    img = Image.new('L', (w, w), 0)
+    img = Image.new('L', (w, h), 0)
     for v in poly_verts:
         vf = v.flatten().tolist()
         ImageDraw.Draw(img).polygon(vf, outline=1, fill=1)
@@ -176,14 +177,14 @@ def im_path2id(im_path):
     return re.search(r'img(\d*).tif',im_path).group(1)
 
 
-def postprocess(y, w=650):
+def postprocess(y, w, h):
     '''
     :param y: Nx1 array of binary model output.  Multiple images are concatenated.
     :param w: image width and height.  assumed the same for all images.
     :return: Nx1 array of filtered output.
     '''
     # convert y to a list of 2d arrays
-    nte = int(len(y)/(w*w))       # number of testing images
+    nte = int(len(y)/(w*h))       # number of testing images
     y2ds = []                     # will be w x w x nte
     st = 0
     for i in range(nte):
