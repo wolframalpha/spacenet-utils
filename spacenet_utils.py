@@ -9,7 +9,7 @@ import re
 
 
 
-def make_dataset(kind='test', im_paths, summeryData_path, im_id_prefix):
+def make_dataset(kind, im_paths, summeryData_path, im_id_prefix):
     '''
     Make dataset of pixel spectra and corresponding ground-truth labels.
     :param kind: 'test' or 'train'.  if 'train', then empty (black) pixels are removed so that kNN is more efficient.
