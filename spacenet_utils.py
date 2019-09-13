@@ -19,15 +19,15 @@ def make_dataset(kind, im_paths, summeryData_path, im_id_prefix):
              yacc: nparray of binary ground-truth labels. shape is w*w*len(im_paths). 
     '''
     Xacc = None
-    yacc = np.array([])
+    yacc = None
     for im_path in im_paths:
         # get image pixel array
         X = geotiff2array(im_path)
         w = X.shape[0]              # image width = height
         h = X.shape[1]
-        if Xacc is None:
-            n_bands = X.shape[2]
-            Xacc = np.empty((0,n_bands))
+#         if Xacc is None:
+#             n_bands = X.shape[2]
+#             Xacc = np.empty((0,n_bands))
         ## process polygons
         poly_verts = get_poly_arr(im_path2id(im_path), summeryData_path, im_id_prefix)
         if not poly_verts:
@@ -36,14 +36,23 @@ def make_dataset(kind, im_paths, summeryData_path, im_id_prefix):
         else:
             y = poly_verts2mask(poly_verts, w, h)#.flatten().astype(bool)
 #         X = X.reshape(w*h,n_bands)
-        if kind == 'train':
-            # remove black pixels
-            good_px = (X!=np.zeros(n_bands)).all(axis=1)
-            Xacc = np.concatenate((Xacc,X[good_px]))
-            yacc = np.concatenate((yacc,y[good_px]))
-        elif kind == 'test':
-            Xacc = np.concatenate((Xacc,X))
-            yacc = np.concatenate((yacc,y))
+        
+        
+#         if kind == 'train':
+#             # remove black pixels
+#             good_px = (X!=np.zeros(n_bands)).all(axis=1)
+#             Xacc = np.concatenate((Xacc,X[good_px]))
+#             yacc = np.concatenate((yacc,y[good_px]))
+#         elif kind == 'test':
+        if Xacc == None:
+            Xacc = [X]
+        else:
+            Xacc = np.concatenate((Xacc,[X]))
+        if yacc == None:
+            yacc = [yacc]
+        else:
+            yacc = np.concatenate((yacc,[y]))
+                
     return Xacc, yacc
 
 
