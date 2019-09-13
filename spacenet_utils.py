@@ -9,7 +9,7 @@ import re
 
 
 
-def make_dataset(kind='test', im_paths=None, summeryData_path=None):
+def make_dataset(kind='test', im_paths, summeryData_path, im_id_prefix):
     '''
     Make dataset of pixel spectra and corresponding ground-truth labels.
     :param kind: 'test' or 'train'.  if 'train', then empty (black) pixels are removed so that kNN is more efficient.
@@ -28,7 +28,7 @@ def make_dataset(kind='test', im_paths=None, summeryData_path=None):
             n_bands = X.shape[2]
             Xacc = np.empty((0,n_bands))
         ## process polygons
-        poly_verts = get_poly_arr(im_path2id(im_path), summeryData_path)
+        poly_verts = get_poly_arr(im_path2id(im_path), summeryData_path, im_id_prefix)
         if not poly_verts:
             y = np.zeros(w*w,dtype=bool)
         else:
@@ -77,7 +77,7 @@ def geotiff2array(im_path):
     return imarr
 
 
-def get_poly_arr(im_id,summeryData_path,im_id_prefix='AOI_5_Khartoum_img'):
+def get_poly_arr(im_id,summeryData_path,im_id_prefix):
     '''
     Get pixel coords of polygon vertices for image with id im_id.  Return as list.
     Requires image ids have prefix given by im_id_prefix.
