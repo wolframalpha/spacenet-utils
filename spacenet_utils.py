@@ -49,7 +49,7 @@ def make_dataset(kind, im_paths, summeryData_path, im_id_prefix):
         else:
             Xacc = np.concatenate((Xacc,[X]))
         if yacc == None:
-            yacc = [yacc]
+            yacc = [y]
         else:
             yacc = np.concatenate((yacc,[y]))
                 
