@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFilter
 import re
 
 
-df = None
+df = pd.DataFrame()
 def make_dataset(kind, im_paths, summeryData_path, im_id_prefix):
     '''
     Make dataset of pixel spectra and corresponding ground-truth labels.
@@ -99,7 +99,7 @@ def get_poly_arr(im_id,summeryData_path,im_id_prefix):
     '''
     # read as dataframe, extract wkt pixels for the desired im_id
     global df 
-    if df == None:
+    if df.empty:
         df = pd.read_csv(summeryData_path)
     df = df.loc[df['ImageId']==im_id_prefix+im_id]['PolygonWKT_Pix']
     # convert coords to list
