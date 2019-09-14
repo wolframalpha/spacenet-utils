@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFilter
 import re
 
 
-
+df = None
 def make_dataset(kind, im_paths, summeryData_path, im_id_prefix):
     '''
     Make dataset of pixel spectra and corresponding ground-truth labels.
@@ -45,13 +45,13 @@ def make_dataset(kind, im_paths, summeryData_path, im_id_prefix):
 #             yacc = np.concatenate((yacc,y[good_px]))
 #         elif kind == 'test':
         if Xacc == None:
-            Xacc = [X]
+            Xacc = np.array([X])
         else:
-            Xacc = np.concatenate((Xacc,[X]))
+            Xacc = np.concatenate((Xacc,np.array([X])))
         if yacc == None:
-            yacc = [y]
+            yacc = np.array([y])
         else:
-            yacc = np.concatenate((yacc,[y]))
+            yacc = np.concatenate((yacc,np.array([y])))
                 
     return Xacc, yacc
 
@@ -98,7 +98,9 @@ def get_poly_arr(im_id,summeryData_path,im_id_prefix):
     :return: array of polygon vertices in units of pixels.
     '''
     # read as dataframe, extract wkt pixels for the desired im_id
-    df = pd.read_csv(summeryData_path)
+    global df 
+    if df == None:
+        df = pd.read_csv(summeryData_path)
     df = df.loc[df['ImageId']==im_id_prefix+im_id]['PolygonWKT_Pix']
     # convert coords to list
     patches = []
