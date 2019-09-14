@@ -45,13 +45,13 @@ def make_dataset(kind, im_paths, summeryData_path, im_id_prefix):
 #             yacc = np.concatenate((yacc,y[good_px]))
 #         elif kind == 'test':
         if Xacc is None:
-            Xacc = np.array([X])
+            Xacc = [X]
         else:
-            Xacc = np.concatenate((Xacc,np.array([X])))
+            Xacc.append(X)
         if yacc is None:
-            yacc = np.array([y])
+            yacc = [y]
         else:
-            yacc = np.concatenate((yacc,np.array([y])))
+            yacc.append(y)
                 
     return Xacc, yacc
 
