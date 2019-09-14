@@ -62,7 +62,7 @@ def poly_verts2mask(poly_verts, w, h):
     :param poly_verts: array of polygon vertices in units of pixels.  each element is an array of the x,y pixel locations.
     :return: w x w binary nparray of ground-truth building pixels. 1 is building, 0 is not-building.
     '''
-    img = Image.new('L', (w, h), 0)
+    img = Image.new('L', (h, w), 0)
     for v in poly_verts:
         vf = v.flatten().tolist()
         ImageDraw.Draw(img).polygon(vf, outline=1, fill=1)
